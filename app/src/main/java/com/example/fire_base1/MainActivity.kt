@@ -9,5 +9,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val binding=ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        //뷰바인딩을 사용하여 화면을 띄운다.
     }
 }
