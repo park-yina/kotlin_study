@@ -55,8 +55,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="정보전송"
-        tools:layout_editor_absoluteX="33dp"
-        tools:layout_editor_absoluteY="442dp"
+        android:layout_marginTop="30dp"
         tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="로그인하기"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
