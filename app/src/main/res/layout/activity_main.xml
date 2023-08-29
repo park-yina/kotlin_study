@@ -7,6 +7,9 @@
     tools:context=".MainActivity"
     tools:ignore="MissingClass"
     android:background="#F6FFFE"
+    android:id="@+id/con_view"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     tools:layout_editor_absoluteY="81dp">
 
 
@@ -72,6 +75,12 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:text="로그아웃 하기" />
+        <Button
+            android:id="@+id/button5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="회원 정보 수정"/>
 
     </LinearLayout>
 

@@ -1,6 +1,7 @@
 package com.example.fire_base1
 
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +10,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.isVisible
 import com.example.fire_base1.databinding.ActivityMainBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -34,6 +36,8 @@ class MainActivity : AppCompatActivity() {
         editText = findViewById(R.id.input_id)
         passwordText = findViewById(R.id.input_password)
         val button = binding.button
+        binding.button4.isVisible=false
+        binding.button5.isVisible=false
         imm=getSystemService(android.content.Context.INPUT_METHOD_SERVICE)as InputMethodManager?
         val requestLauncher=registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()){
@@ -84,19 +88,27 @@ class MainActivity : AppCompatActivity() {
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
-                        Toast.makeText(this, "로그인 성공", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, "${auth.currentUser!!.email}님 로그인 성공", Toast.LENGTH_LONG).show()
                         auth.currentUser?.let{
                             Log.d("testing","${auth.currentUser!!.isEmailVerified}")
                             Log.d("testing","${auth.currentUser!!.email}")
                             Log.d("testing","${auth.currentUser!!.uid}")
-                            binding.inputId.isEnabled=false
-                            binding.inputPassword.isEnabled=false
-                            binding.button4.setOnClickListener {
-                                binding.inputId.isEnabled=true
-                                binding.inputPassword.isEnabled=true
-                                auth.signOut()
-                                Toast.makeText(this,"로그아웃 완료",Toast.LENGTH_LONG).show()
-                            }
+                        }
+                        binding.inputId.isEnabled=false
+                        binding.inputPassword.isEnabled=false
+                        binding.button4.isVisible=true
+                        binding.button5.isVisible=true
+                        val intent=Intent(this,WithDrawl::class.java)
+                        startActivity(intent)
+                        binding.button4.setOnClickListener {
+                            binding.inputId.text=null
+                            binding.inputPassword.text=null
+                            binding.inputId.isEnabled=true
+                            binding.inputPassword.isEnabled=true
+                            auth.signOut()
+                            binding.button4.isVisible=false
+                            binding.button5.isVisible=false
+                            Toast.makeText(this,"로그아웃 완료",Toast.LENGTH_LONG).show()
                         }
                     } else {
                         Toast.makeText(this, "로그인 실패", Toast.LENGTH_LONG).show()
@@ -111,6 +123,9 @@ class MainActivity : AppCompatActivity() {
                 .build()
             val signInIntent=GoogleSignIn.getClient(this,gso).signInIntent
             requestLauncher.launch(signInIntent)
+        }
+        binding.conView.setOnClickListener {
+            hidekey()
         }
     }
     fun hidekey(){
