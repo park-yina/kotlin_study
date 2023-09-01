@@ -2,8 +2,11 @@ package com.example.fire_base1
 
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
+import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import com.example.fire_base1.databinding.WithdrawlBinding
 import com.google.firebase.auth.FirebaseAuth
 
@@ -13,6 +16,8 @@ class WithDrawl:AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val binding=WithdrawlBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.changeId.isVisible=false
+        binding.curId.isVisible=false
         auth= FirebaseAuth.getInstance()
         binding.delbtn3.setOnClickListener {
             val user = auth.currentUser!!
@@ -26,6 +31,20 @@ class WithDrawl:AppCompatActivity() {
                     }
                 }
         }
-        binding.delbtn1.setOnClickListener {  }
+        binding.delbtn1.setOnClickListener {
+            binding.changeId.isVisible=true
+            binding.curId.isVisible=true;
+            binding.curId.text="현재 이메일 : ${auth.currentUser!!.email}"
+            binding.changeId.setOnEditorActionListener { v, actionId, event ->
+                var handled=false
+                if(actionId==EditorInfo.IME_ACTION_DONE){
+                    ChangeEmail().show(
+                        supportFragmentManager,"ChangeEmail"
+                    )
+                    handled=true
+                }
+                handled
+            }
+        }
     }
 }
