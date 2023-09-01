@@ -16,6 +16,17 @@
            android:layout_height="wrap_content"
            android:textStyle="bold"
            android:text="이메일 주소 변경을 진행합니다"/>
+        <TextView
+            android:id="@+id/current_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/white"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:inputType="text"
+            android:text=""/>
 
         <Button
             android:layout_marginBottom="20dp"
