@@ -1,5 +1,7 @@
 package com.example.fire_base1
 
+import android.app.ProgressDialog.show
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
@@ -35,11 +37,15 @@ class WithDrawl:AppCompatActivity() {
             binding.changeId.isVisible=true
             binding.curId.isVisible=true;
             binding.curId.text="현재 이메일 : ${auth.currentUser!!.email}"
+            val changeEmail=ChangeEmail()
+            val args=Bundle()
             binding.changeId.setOnEditorActionListener { v, actionId, event ->
                 var handled=false
                 if(actionId==EditorInfo.IME_ACTION_DONE){
-                    ChangeEmail().show(
-                        supportFragmentManager,"ChangeEmail"
+                    args.putString("change_text",binding.changeId.text.toString())
+                    changeEmail.arguments=args
+                    changeEmail.show(
+                        supportFragmentManager,"changeEmail"
                     )
                     handled=true
                 }

@@ -1,6 +1,8 @@
 package com.example.fire_base1
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,8 +28,12 @@ class ChangeEmail:DialogFragment() {
     }
 
     override fun onStart() {
-        binding.currentEmail.text="현재 이메일: ${auth.currentUser!!.email}"
         super.onStart()
+        val receivetext = arguments?.getString("change_text")
+        Log.d("testing","$receivetext")
+        if (receivetext != null) {
+            binding.currentEmail.text = "현재 이메일: ${auth.currentUser!!.email}"
+            binding.changeEmail.text = "변경 예정 이메일:${receivetext}"
+        }
     }
-
 }
