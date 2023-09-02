@@ -39,12 +39,23 @@
             android:inputType="text"
             android:text=""/>
 
+        <TextView
+            android:textColor="#D7E7F4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:gravity="center"
+            android:layout_marginBottom="10dp"
+            android:text="Yes버튼을 누를 시 기존 이메일 회원에서는 로그아웃됩니다."/>
+
         <Button
+            android:id="@+id/yes_btn"
             android:layout_marginBottom="20dp"
             android:layout_gravity="center_horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:text="Yes" />
+
     </LinearLayout>
 </layout>
