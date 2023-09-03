@@ -8,6 +8,7 @@ import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.isVisible
 import com.example.fire_base1.databinding.WithdrawlBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -40,17 +41,17 @@ class WithDrawl:AppCompatActivity() {
             val changeEmail=ChangeEmail()
             val args=Bundle()
             binding.changeId.setOnEditorActionListener { v, actionId, event ->
-                var handled=false
-                if(actionId==EditorInfo.IME_ACTION_DONE){
-                    args.putString("change_text",binding.changeId.text.toString())
-                    changeEmail.arguments=args
-                    changeEmail.show(
-                        supportFragmentManager,"changeEmail"
-                    )
-                    handled=true
+                var handled = false
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    args.putString("change_text", binding.changeId.text.toString())
+                    changeEmail.arguments = args
+                            changeEmail.show(
+                                supportFragmentManager, "changeEmail"
+                            )
+                            handled = true
+                    }
+                    handled
                 }
-                handled
-            }
         }
     }
 }
