@@ -15,5 +15,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        firebase = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
+        if (firebase.currentUser != null) {
+            db.collection("users")
+                .add(User(firebase.currentUser!!.uid, firebase.currentUser!!.email.toString()))
+        }
+        else{
+            db.collection("users")
+                .add(User("name","email"))
+        }
     }
 }
