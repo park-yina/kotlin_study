@@ -4,15 +4,84 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    tools:ignore="MissingClass"
+    android:background="#F6FFFE"
+    android:id="@+id/con_view"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    tools:layout_editor_absoluteY="81dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+
+   <EditText
+       android:id="@+id/input_id"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:hint="아이디를 입력하세요"
+       android:inputType="text"
+       android:text=""
+       android:layout_marginTop="15dp"
+       app:layout_constraintBottom_toTopOf="@+id/input_password"
+       app:layout_constraintStart_toStartOf="@id/con_view"
+       app:layout_constraintTop_toTopOf="parent"
+       tools:ignore="NotSibling" />
+
+
+   <EditText
+       android:id="@+id/input_password"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:hint="비밀번호를 입력하세요"
+       android:inputType="textPassword"
+       android:text=""
+       android:layout_marginTop="15dp"
+       app:layout_constraintStart_toStartOf="@id/con_view"
+       app:layout_constraintTop_toBottomOf="@id/input_id"
+       tools:ignore="NotSibling" />
+
+   <LinearLayout
+       android:layout_width="wrap_content"
+       android:layout_height="match_parent"
+       android:gravity="center"
+       android:orientation="vertical"
+       app:layout_constraintTop_toBottomOf="@id/input_password"
+       app:layout_constraintStart_toStartOf="@id/input_password"
+       app:layout_constraintEnd_toEndOf="@+id/input_password">
+      <Button
+          android:id="@+id/sign_in"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="8dp"
+          android:text="회원가입하기" />
+
+      <Button
+          android:id="@+id/button2"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="8dp"
+          android:text="이메일로 로그인하기" />
+
+      <com.google.android.gms.common.SignInButton
+          android:id="@+id/button3"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="8dp"
+          app:buttonSize="wide" />
+
+      <Button
+          android:id="@+id/button4"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="8dp"
+          android:text="로그아웃 하기" />
+      <Button
+          android:id="@+id/button5"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="8dp"
+          android:text="회원 정보 수정"/>
+
+   </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
