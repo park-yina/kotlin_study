@@ -7,17 +7,29 @@
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/input_email"
         android:inputType="textEmailAddress"
         android:hint="이메일 주소를 입력하세요"/>
     <EditText
+        android:id="@+id/sign_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
         android:hint="비밀번호를 입력하세요"/>
     <EditText
+        android:id="@+id/check_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
         android:hint="비밀번호를 다시 한번 입력해주세요"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="70dp"
+        android:layout_gravity="center"
+        android:text="인증 이메일 발송하기"
+        android:textColor="@color/black"
+        android:id="@+id/send_btn"
+        android:backgroundTint="#FADBDB"/>
 
 </LinearLayout>

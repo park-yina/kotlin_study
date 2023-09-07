@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent">
+    <CheckBox
+        android:id="@+id/email_check"
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""/>
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="이메일 인증을 완료하여야 회원가입이 완료됩니다."/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="left|bottom"
+        android:layout_marginLeft="10dp"
+        android:id="@+id/try_email"
+        android:text="이메일 인증 시도"/>
+
+
+</LinearLayout>
+</layout>

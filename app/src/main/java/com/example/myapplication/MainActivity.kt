@@ -3,6 +3,9 @@ package com.example.myapplication
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.util.Log
+import android.widget.Toast
 import com.example.myapplication.databinding.ActivityMainBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -26,5 +29,20 @@ class MainActivity : AppCompatActivity() {
             val intent= Intent(this,SignInActivity::class.java)
             startActivity(intent)
         }
+    }
+    fun onDialogDimssmiss(resBundle: Bundle?){
+        if (resBundle != null) {
+            val resData= resBundle.getString("resid").toString()
+            if (resData != null) {
+                binding.inputId.setText(resData)
+            } else {
+                Log.d("testing","null")
+              binding.inputId.setText("")
+            }
+        }
+            else{
+                Toast.makeText(this, "커스텀 다이얼 실행 안됨", Toast.LENGTH_SHORT).show()
+            }
+
     }
 }
