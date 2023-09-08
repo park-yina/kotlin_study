@@ -49,6 +49,8 @@ class MainActivity : AppCompatActivity() {
                         db.collection("users")
                             .document("cur_user")
                             .set(user)
+                        val intent=Intent(this,ProFile::class.java)
+                        startActivity(intent)
                     }
                     else{
                         Toast.makeText(this,"로그인에 실패했습니다",Toast.LENGTH_LONG).show()
