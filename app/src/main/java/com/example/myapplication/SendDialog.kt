@@ -1,5 +1,6 @@
 package com.example.myapplication
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -63,10 +64,10 @@ class SendDialog:DialogFragment() {
     }
     override fun onStop(){
         super.onStop()
-        val resbundle=Bundle()
-        resbundle.putString("resid",arguments?.getString("email"))
+        val intent= Intent(requireActivity(),MainActivity::class.java)
+        startActivity(intent)
         val mainActivity=activity as MainActivity
-        mainActivity.onDialogDimssmiss(resbundle)
+        mainActivity.onDialogDimssmiss()
 
     }
 }
