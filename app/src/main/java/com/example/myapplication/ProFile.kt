@@ -41,6 +41,7 @@ class ProFile:AppCompatActivity() {
     private var filePath: String? = null
     private val REQUEST_CAMERA_PERMISSION = 101
     private val REQUIRED_PERMISSIONS = arrayOf(
+        android.Manifest.permission.INTERNET,
         android.Manifest.permission.CAMERA,
         android.Manifest.permission.WRITE_EXTERNAL_STORAGE
     )
@@ -144,6 +145,5 @@ class ProFile:AppCompatActivity() {
             Toast.makeText(this, "업로드에 실패하였습니다", Toast.LENGTH_LONG).show()
         }
     }
-
 
 }
