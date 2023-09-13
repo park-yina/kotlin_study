@@ -47,10 +47,6 @@ class MainActivity : AppCompatActivity() {
                 .addOnCompleteListener(this){task->
                     if(task.isSuccessful){
                         Toast.makeText(this,"${firebase.currentUser!!.email}님 로그인 성공",Toast.LENGTH_LONG).show()
-                        val user=User("${firebase.currentUser!!.uid}","${firebase.currentUser!!.email}")
-                        db.collection("users")
-                            .document("cur_user")
-                            .set(user)
                         val intent=Intent(this,ProFile::class.java)
                         startActivity(intent)
                     }

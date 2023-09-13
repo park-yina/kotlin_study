@@ -10,5 +10,11 @@
      android:layout_marginTop="40dp"
      android:layout_width="100dp"
      android:layout_height="100dp"/>
-
+ <Button
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:id="@+id/upload_gallery"
+     android:layout_gravity="center_horizontal"
+     android:layout_marginTop="20dp"
+  android:text="프로필 사진 변경: 갤러리에서 업로드"/>
 </LinearLayout>

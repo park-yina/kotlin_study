@@ -1,3 +1,3 @@
 package com.example.myapplication
 
-data class User(var uid:String, var email:String)
+data class User(var uid:String, var email:String,var profileurl:String)
