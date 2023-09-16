@@ -14,23 +14,27 @@
 
 
    <EditText
+       android:background="#F2FFF6"
        android:id="@+id/input_id"
        android:layout_width="match_parent"
-       android:layout_height="wrap_content"
+       android:layout_height="48dp"
        android:hint="아이디를 입력하세요"
        android:inputType="text"
+       android:textColor="@color/black"
        android:text=""
        android:layout_marginTop="15dp"
        app:layout_constraintBottom_toTopOf="@+id/input_password"
        app:layout_constraintStart_toStartOf="@id/con_view"
        app:layout_constraintTop_toTopOf="parent"
-       tools:ignore="NotSibling" />
+       tools:ignore="NotSibling"/>
 
 
    <EditText
+       android:background="#F2FFF6"
+       android:textColor="@color/black"
        android:id="@+id/input_password"
        android:layout_width="match_parent"
-       android:layout_height="wrap_content"
+       android:layout_height="48dp"
        android:hint="비밀번호를 입력하세요"
        android:inputType="textPassword"
        android:text=""
