@@ -18,15 +18,19 @@ import androidx.core.view.isInvisible
 import com.bumptech.glide.Glide
 import com.example.myapplication.databinding.ProfileBinding
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.Body
+import retrofit2.http.Headers
+import retrofit2.http.POST
 import java.io.InputStream
-import java.security.Permissions
 import java.util.UUID
 
 class ProFile:AppCompatActivity() {
@@ -164,6 +168,7 @@ class ProFile:AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+
         val doc=db.collection("users").document("${auth.currentUser!!.uid}")
         doc.get().addOnSuccessListener {
             DocumentSnapshot->
