@@ -13,7 +13,7 @@ import retrofit2.http.POST
         @POST("https://fcm.googleapis.com/v1/projects/androidtest-dfc2a/messages:send")
         @Headers(
             "Content-type:application/json",
-            "Authorization:Bearer 파이어베이스 토큰"
+            "Authorization:Bearer fcm토큰값"
         )
         fun sendFcmMessage(@Body message: FcmMessage): Call<ResponseBody>
     }
@@ -31,4 +31,3 @@ import retrofit2.http.POST
         val body: String,
         val title: String
     )
-

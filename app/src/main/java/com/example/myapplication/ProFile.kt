@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.ContactsContract.Data
 import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
@@ -14,10 +15,17 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 import androidx.core.view.isInvisible
+import androidx.databinding.DataBindingUtil.setContentView
 import com.bumptech.glide.Glide
 import com.example.myapplication.databinding.ProfileBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
@@ -58,46 +66,53 @@ class ProFile:AppCompatActivity() {
         }
     }
     private fun uploadImageToFirebase(imageUri: Uri) {
-        val docRef=db.collection("users").document("${auth.currentUser!!.uid}")
-        docRef.get().addOnSuccessListener {
-                DocumentSnapshot->
-            if(DocumentSnapshot.exists()){
-                val temp=DocumentSnapshot.toObject(User::class.java)
-                if(temp!=null&&temp.filename!=""){
-                    val storageRef: StorageReference = storage.reference
-                    val imgRef: StorageReference = storageRef.child("images/${temp.filename}")
-                    imgRef.delete()
-                        .addOnSuccessListener {
-                            Toast.makeText(binding.root.context,"기존 이미지 삭제를 성공했습니다",Toast.LENGTH_LONG).show()
-                            db.collection("users").document("${auth.currentUser!!.uid}")
-                                .update("filename","")
-                            db.collection("users").document("${auth.currentUser!!.uid}")
-                                .update("profileurl","")
-
-                        }
-                        .addOnFailureListener {
-                            Log.d("setOn","img삭제 실패")
-                        }
-
+        val currentUserUid = auth.currentUser!!.uid
+        val databaseReference:DatabaseReference = FirebaseDatabase.getInstance().reference.child("users").child(currentUserUid)
+        databaseReference.addValueEventListener(object :ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(snapshot.exists()){
+                    val user=snapshot.getValue(User::class.java)
+                    if(user!=null&&user.filename!=""){
+                        //파일네임이 공백이 아니라는 것은 이미 프로필로 등록된 파일이 있다는 것. 따라서 용량 관리 위해서 기존 파일을 지워준다
+                        val storageRef:StorageReference=storage.reference
+                        val imgRef:StorageReference=storageRef.child("images/${user.filename}")
+                        imgRef.delete()
+                            .addOnSuccessListener {
+                                Toast.makeText(binding.root.context,"기존 프로필을 삭제했습니다",Toast.LENGTH_LONG).show()
+                                db.collection("users").document(currentUserUid)
+                                    .update("filename","")
+                                db.collection("users").document(currentUserUid)
+                                    .update("profileurl","")
+                                databaseReference.removeEventListener(this)
+                            }
+                            .addOnFailureListener {
+                                Log.d("testing","이미지 삭제 실패")
+                            }
+                    }
                 }
             }
-        }
+            override fun onCancelled(error: DatabaseError) {
+                Log.d("testing","파이어베이스 상태 불러오기 실패")
+            }
+        })
         val storageRef: StorageReference = storage.reference
         val email = auth.currentUser?.email ?: "default"
         val fileName = "${email.substringBefore('@')}_${UUID.randomUUID()}.jpg"
         val imgRef: StorageReference = storageRef.child("images/$fileName")
         // ContentResolver를 사용하여 이미지 데이터를 업로드합니다.
         val inputStream: InputStream? = applicationContext.contentResolver.openInputStream(imageUri)
+
         if (inputStream != null) {
             val uploadTask = imgRef.putStream(inputStream)
 
             uploadTask.addOnSuccessListener {
+                // 이미지 업로드 성공 처리
                 imgRef.downloadUrl.addOnSuccessListener { uri ->
                     val user = User(
                         "${auth.currentUser!!.uid}",
                         "${auth.currentUser!!.email}",
                         uri.toString(),
-                       fileName,
+                        fileName,
                         ""
                     )
 
@@ -105,10 +120,13 @@ class ProFile:AppCompatActivity() {
                         .document("${auth.currentUser!!.uid}")
                         .set(user)
                 }.addOnFailureListener {
-                    Log.d("setOn","이미지url을 가져오는 데에 실패했습니다.")
+                    Log.d("setOn", "이미지 URL을 가져오는 데 실패했습니다.")
                 }
             }.addOnFailureListener {
                 Toast.makeText(this, "업로드에 실패하였습니다", Toast.LENGTH_LONG).show()
+            }.addOnCompleteListener {
+                // 이미지 업로드 후에는 InputStream을 닫아야 합니다.
+                inputStream.close()
             }
         } else {
             Log.d("setOn", "InputStream이 비어 있습니다.")
