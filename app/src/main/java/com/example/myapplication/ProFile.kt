@@ -76,6 +76,8 @@ class ProFile:AppCompatActivity() {
                     // 이미지 삭제가 성공한 경우
                     Log.d("testing", "이미지 삭제 성공")
 
+                    // 파일 삭제 후에 새 파일 업로드
+                    uploadNewImage(imageUri)
                 }
                 .addOnFailureListener { e ->
                     // 이미지 삭제 실패
@@ -83,7 +85,7 @@ class ProFile:AppCompatActivity() {
                 }
         }
 
-        databaseReference.child("${auth.currentUser!!.uid}").addValueEventListener(object : ValueEventListener {
+        databaseReference.child("${auth.currentUser!!.uid}").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     val user = snapshot.getValue(User::class.java)
@@ -92,7 +94,10 @@ class ProFile:AppCompatActivity() {
                         val filename = user.filename
                         Log.d("test", "filename: $filename")
                         // 파일 삭제를 먼저 수행합니다.
-                       deleteProfileImage(filename)
+                        deleteProfileImage(filename)
+                    } else {
+                        // 데이터베이스에 파일명이 없는 경우
+                        uploadNewImage(imageUri)
                     }
                 }
             }
@@ -101,6 +106,9 @@ class ProFile:AppCompatActivity() {
                 Log.d("testing", "파이어베이스 상태 불러오기 실패")
             }
         })
+    }
+
+    private fun uploadNewImage(imageUri: Uri) {
         val storageRef: StorageReference = storage.reference
         val email = auth.currentUser?.email ?: "default"
         val fileName = "${email.substringBefore('@')}_${UUID.randomUUID()}.jpg"
@@ -112,9 +120,9 @@ class ProFile:AppCompatActivity() {
             val uploadTask = imgRef.putStream(inputStream)
 
             uploadTask.addOnSuccessListener {
-                val updates=HashMap<String,Any>()
-                updates["filename"]=fileName
-                updates["profileurl"]=imageUri.toString()
+                val updates = HashMap<String, Any>()
+                updates["filename"] = fileName
+                updates["profileurl"] = imageUri.toString()
                 // 이미지 업로드 성공 처리
                 imgRef.downloadUrl.addOnSuccessListener { uri ->
                     databaseReference.child("${auth.currentUser!!.uid}").updateChildren(updates)
