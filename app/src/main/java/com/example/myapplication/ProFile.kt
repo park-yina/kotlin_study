@@ -39,13 +39,15 @@ import retrofit2.http.Body
 import retrofit2.http.Headers
 import retrofit2.http.POST
 import java.io.InputStream
+import java.security.Permissions
+import java.util.HashMap
 import java.util.UUID
 
 class ProFile:AppCompatActivity() {
     lateinit var auth: FirebaseAuth
     lateinit var binding: ProfileBinding
     lateinit var storage: FirebaseStorage
-    lateinit var db: FirebaseFirestore
+    lateinit var databaseReference: DatabaseReference
     private var REQUIRED_PERMISSIONS = arrayOf(
         android.Manifest.permission.INTERNET,
         android.Manifest.permission.CAMERA
@@ -66,33 +68,37 @@ class ProFile:AppCompatActivity() {
         }
     }
     private fun uploadImageToFirebase(imageUri: Uri) {
-        val currentUserUid = auth.currentUser!!.uid
-        val databaseReference:DatabaseReference = FirebaseDatabase.getInstance().reference.child("users").child(currentUserUid)
-        databaseReference.addValueEventListener(object :ValueEventListener{
+        fun deleteProfileImage(filename: String) {
+            val storageRef: StorageReference = storage.reference
+            val imgRef: StorageReference = storageRef.child("images/$filename")
+            imgRef.delete()
+                .addOnSuccessListener {
+                    // 이미지 삭제가 성공한 경우
+                    Log.d("testing", "이미지 삭제 성공")
+
+                }
+                .addOnFailureListener { e ->
+                    // 이미지 삭제 실패
+                    Log.d("testing", "이미지 삭제 실패: $e")
+                }
+        }
+
+        databaseReference.child("${auth.currentUser!!.uid}").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                if(snapshot.exists()){
-                    val user=snapshot.getValue(User::class.java)
-                    if(user!=null&&user.filename!=""){
-                        //파일네임이 공백이 아니라는 것은 이미 프로필로 등록된 파일이 있다는 것. 따라서 용량 관리 위해서 기존 파일을 지워준다
-                        val storageRef:StorageReference=storage.reference
-                        val imgRef:StorageReference=storageRef.child("images/${user.filename}")
-                        imgRef.delete()
-                            .addOnSuccessListener {
-                                Toast.makeText(binding.root.context,"기존 프로필을 삭제했습니다",Toast.LENGTH_LONG).show()
-                                db.collection("users").document(currentUserUid)
-                                    .update("filename","")
-                                db.collection("users").document(currentUserUid)
-                                    .update("profileurl","")
-                                databaseReference.removeEventListener(this)
-                            }
-                            .addOnFailureListener {
-                                Log.d("testing","이미지 삭제 실패")
-                            }
+                if (snapshot.exists()) {
+                    val user = snapshot.getValue(User::class.java)
+                    if (user != null && user.filename.isNotBlank()) {
+                        // 파일 이름을 가져옵니다.
+                        val filename = user.filename
+                        Log.d("test", "filename: $filename")
+                        // 파일 삭제를 먼저 수행합니다.
+                       deleteProfileImage(filename)
                     }
                 }
             }
+
             override fun onCancelled(error: DatabaseError) {
-                Log.d("testing","파이어베이스 상태 불러오기 실패")
+                Log.d("testing", "파이어베이스 상태 불러오기 실패")
             }
         })
         val storageRef: StorageReference = storage.reference
@@ -106,19 +112,12 @@ class ProFile:AppCompatActivity() {
             val uploadTask = imgRef.putStream(inputStream)
 
             uploadTask.addOnSuccessListener {
+                val updates=HashMap<String,Any>()
+                updates["filename"]=fileName
+                updates["profileurl"]=imageUri.toString()
                 // 이미지 업로드 성공 처리
                 imgRef.downloadUrl.addOnSuccessListener { uri ->
-                    val user = User(
-                        "${auth.currentUser!!.uid}",
-                        "${auth.currentUser!!.email}",
-                        uri.toString(),
-                        fileName,
-                        ""
-                    )
-
-                    db.collection("users")
-                        .document("${auth.currentUser!!.uid}")
-                        .set(user)
+                    databaseReference.child("${auth.currentUser!!.uid}").updateChildren(updates)
                 }.addOnFailureListener {
                     Log.d("setOn", "이미지 URL을 가져오는 데 실패했습니다.")
                 }
@@ -144,9 +143,10 @@ class ProFile:AppCompatActivity() {
         setContentView(binding.root)
         storage = Firebase.storage
         auth = FirebaseAuth.getInstance()
-        db= FirebaseFirestore.getInstance()
+        databaseReference=FirebaseDatabase.getInstance().reference.child("users")
         Permissions()
         binding.uploadGallery.isInvisible = true
+
     }
     inner class Permissions {
         private fun showPermissionRationaleDialog() {
@@ -186,19 +186,6 @@ class ProFile:AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-
-        val doc=db.collection("users").document("${auth.currentUser!!.uid}")
-        doc.get().addOnSuccessListener {
-            DocumentSnapshot->
-            if(DocumentSnapshot.exists()){
-                val obj=DocumentSnapshot.toObject(User::class.java)
-                if(obj!!.nickname==""){
-                    doc.update("nickname","${auth.currentUser!!.email}")
-                    obj!!.nickname=="${auth.currentUser!!.email}"
-                    binding.nickname.text=obj.nickname
-                }
-            }
-        }
         binding.circlePic.setOnClickListener {
             Log.d("setOn", "click event success")
             binding.uploadGallery.isInvisible = false
@@ -214,6 +201,9 @@ class ProFile:AppCompatActivity() {
                     .create()
                     .show()
             }
+        }
+        binding.editNickName.setOnClickListener {
+            
         }
     }
 
