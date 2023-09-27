@@ -4,12 +4,16 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract.Data
 import android.provider.Settings
+import android.provider.Settings.Global
 import android.util.Log
+import android.view.View
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -17,8 +21,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil.setContentView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.example.myapplication.databinding.ProfileBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -31,6 +40,10 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
+import com.google.protobuf.Value
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -42,6 +55,8 @@ import java.io.InputStream
 import java.security.Permissions
 import java.util.HashMap
 import java.util.UUID
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 class ProFile:AppCompatActivity() {
     lateinit var auth: FirebaseAuth
@@ -95,7 +110,8 @@ class ProFile:AppCompatActivity() {
                         Log.d("test", "filename: $filename")
                         // 파일 삭제를 먼저 수행합니다.
                         deleteProfileImage(filename)
-                    } else {
+                    }
+                    else {
                         // 데이터베이스에 파일명이 없는 경우
                         uploadNewImage(imageUri)
                     }
@@ -190,12 +206,74 @@ class ProFile:AppCompatActivity() {
             return true
         }
     }
+    private suspend fun getUserData(uid:String):User?{
+        return suspendCoroutine {
+                continuation ->databaseReference.child(uid).addListenerForSingleValueEvent(object :ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(snapshot.exists()){
+                    val user=snapshot.getValue(User::class.java)
+                    continuation.resume(user)
+                }
+                else{
+                    continuation.resume(null)
+                }
+            }
 
+            override fun onCancelled(error: DatabaseError) {
+                continuation.resume(null)
+            }
+
+        })
+        }
+    }
 
     override fun onStart() {
         super.onStart()
+        binding.nickname.isVisible=true
+        GlobalScope.launch(Dispatchers.IO) {
+            val user=getUserData("${auth.currentUser!!.uid}")
+            launch(Dispatchers.Main){
+                if(user!=null&&user.nickname.isNotBlank()){
+                   binding.nickname.text=user.nickname
+                }
+                else{
+                    binding.nickname.text=user!!.email
+                }
+                if(user!=null&&user.profileurl.isNotBlank()){
+                    Glide.with(this@ProFile)
+                        .load(user.profileurl)
+                        .listener(object:RequestListener<Drawable>{
+                            override fun onResourceReady(
+                                resource: Drawable,
+                                model: Any,
+                                target: Target<Drawable>?,
+                                dataSource: DataSource,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                binding.progressbar.visibility= View.GONE
+                                return false
+                            }
+
+                            override fun onLoadFailed(
+                                e: GlideException?,
+                                model: Any?,
+                                target: Target<Drawable>,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                binding.progressbar.visibility=View.GONE
+                                return false
+                            }
+                        })
+                        .into(binding.circlePic)
+                }
+                else if(user!=null&&user.profileurl.isNullOrBlank()){
+                    Glide.with(this@ProFile)
+                        .load(R.drawable.basicprofile)
+                        .into(binding.circlePic)
+                }
+            }
+        }
         binding.circlePic.setOnClickListener {
-            Log.d("setOn", "click event success")
             binding.uploadGallery.isInvisible = false
             binding.uploadGallery.setOnClickListener {
                 AlertDialog.Builder(this)
@@ -210,9 +288,7 @@ class ProFile:AppCompatActivity() {
                     .show()
             }
         }
-        binding.editNickName.setOnClickListener {
-            
-        }
+
     }
 
     private fun onGalleryLoad() {
