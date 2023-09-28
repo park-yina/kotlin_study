@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:background="@drawable/backgroundcolor"
+    android:layout_height="match_parent">
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/coffeelogo"
+        android:layout_margin="100dp"
+        app:civ_border_width="5dp"
+        app:civ_circle_background_color="#F3E5F5"
+        app:civ_border_color="#493005"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="40dp"
+        android:text="맛의 기록, 테이스팅 노트"
+        android:textColor="#1E1301"
+        android:textSize="25dp"
+        android:textStyle="italic" />
+
+
+</LinearLayout>
