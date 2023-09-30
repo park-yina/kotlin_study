@@ -21,7 +21,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="40dp"
         android:text="맛의 기록, 테이스팅 노트"
-        android:textColor="#1E1301"
+        android:textColor="#432D02"
         android:textSize="25dp"
         android:textStyle="italic" />
 
