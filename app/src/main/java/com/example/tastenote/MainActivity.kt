@@ -32,26 +32,9 @@ import com.navercorp.nid.profile.data.NidProfileResponse
 class MainActivity() : ComponentActivity() {
     lateinit var binding: ActivitymainBinding
     private var REQUIRE_PERMISSION = arrayOf(android.Manifest.permission.INTERNET)
+    val naverLogin=SocialLogin.Naver()
+    private lateinit var oAuthLoginCallback:OAuthLoginCallback
 
-    private val oAuthLoginCallback: OAuthLoginCallback = object : OAuthLoginCallback {
-        override fun onSuccess() {
-            Log.w("test", "AccessToken : " + NaverIdLoginSDK.getAccessToken())
-            Log.w("test", "client id :${getString(R.string.social_login_naver_client_id)}")
-            Log.w("test", "ReFreshToken : " + NaverIdLoginSDK.getRefreshToken())
-            Log.w("test", "Expires : " + NaverIdLoginSDK.getExpiresAt().toString())
-            Log.w("test", "TokenType : " + NaverIdLoginSDK.getTokenType())
-            Log.w("test", "State : " + NaverIdLoginSDK.getState().toString())
-        }
-
-        override fun onFailure(httpStatus: Int, message: String) {
-            val code = NaverIdLoginSDK.getLastErrorCode().code
-            Log.w("naver", "오류코드:${code}")
-        }
-
-        override fun onError(errorCode: Int, message: String) {
-            onFailure(errorCode, "에러 발생")
-        }
-    }
     inner class Permission() {
         private fun onShowPermissionDialog() {
             AlertDialog.Builder(binding.root.context)
@@ -101,9 +84,9 @@ class MainActivity() : ComponentActivity() {
 
     override fun onStart() {
         super.onStart()
+        oAuthLoginCallback=naverLogin.oAuthLoginCallback
         binding.naverLogin.setOnClickListener{
             NaverIdLoginSDK.authenticate(this,oAuthLoginCallback)
-            binding.naverLogin.setOAuthLogin(oAuthLoginCallback)
         }
     }
 }
