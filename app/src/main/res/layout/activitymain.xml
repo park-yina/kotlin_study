@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
+    android:background="#FFF3E0"
     android:layout_height="match_parent">
 
  <ImageView
+     android:layout_marginTop="10dp"
      android:layout_width="wrap_content"
      android:layout_height="wrap_content"
-     android:layout_marginTop="20dp"
      android:layout_gravity="center"
-     android:tint="#4A3920"
      android:src="@drawable/mainlogo"/>
  <TextView
      android:layout_width="wrap_content"
@@ -24,20 +25,21 @@
 
  <LinearLayout
      android:layout_width="wrap_content"
-     android:orientation="vertical"
+     android:layout_height="match_parent"
      android:layout_gravity="center"
-     android:layout_height="wrap_content">
+     android:layout_marginTop="30dp"
+     android:orientation="vertical">
+
   <com.google.android.gms.common.SignInButton
+      android:id="@+id/google_btn"
       android:layout_width="wrap_content"
-      android:layout_marginTop="30dp"
-      android:layout_marginBottom="-40dp"
-      app:buttonSize="wide"
-      android:layout_height="wrap_content"/>
+      android:layout_height="wrap_content"
+      app:buttonSize="wide" />
 
   <com.navercorp.nid.oauth.view.NidOAuthLoginButton
       android:id="@+id/naver_login"
-      android:layout_marginTop="-10dp"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"/>
+      android:layout_height="68dp"
+      android:layout_marginTop="20dp" />
  </LinearLayout>
 </LinearLayout>
