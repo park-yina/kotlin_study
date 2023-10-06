@@ -29,6 +29,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.gson.Gson
+import com.kakao.sdk.auth.model.OAuthToken
+import com.kakao.sdk.common.model.ClientError
+import com.kakao.sdk.common.model.ClientErrorCause
+import com.kakao.sdk.user.UserApi
+import com.kakao.sdk.user.UserApiClient
 import com.navercorp.nid.NaverIdLoginSDK
 import com.navercorp.nid.oauth.OAuthLoginCallback
 import com.navercorp.nid.oauth.view.NidOAuthLoginButton.Companion.launcher
@@ -130,7 +135,41 @@ open class SocialLogin {
             }
         }
     }
-    class Kakao:SocialLogin(){
-        
+    class Kakao:SocialLogin() {
+        public fun onKakoLogin(activity:Activity) {
+            val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
+                if (error != null) {
+                    Log.w("kakao", "카카오 로그인 실패:${error}")
+                } else if (token != null) {
+                    Log.w("kakao", "토큰 발급 성공:${token.accessToken}")
+                } else {
+                    Log.w("kakao", "왜 실패지")
+                }
+            }
+            if(UserApiClient.instance.isKakaoTalkLoginAvailable(activity)){
+                UserApiClient.instance.loginWithKakaoTalk(activity){
+                    token, error ->
+                    if(error!=null) {
+                        if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
+                            Toast.makeText(activity, "사용자가 카카오 로그인을 취소했습니다", Toast.LENGTH_LONG)
+                                .show()
+                            return@loginWithKakaoTalk
+                        }
+                        UserApiClient.instance.loginWithKakaoAccount(activity,callback=callback)
+                        Toast.makeText(activity,"카카오 톡으로 로그인 성공",Toast.LENGTH_LONG).show()
+                    }
+                    else if(token!=null){
+                        UserApiClient.instance.loginWithKakaoAccount(activity,callback=callback)
+                        Toast.makeText(activity,"카카오 계정으로 로그인 성공",Toast.LENGTH_LONG).show()
+                        Log.w("kakao","카카오 계정 로그인 성공:${token.accessToken}")
+                    }
+                }
+            }
+            else{
+                UserApiClient.instance.loginWithKakaoAccount(activity, callback = callback)
+                Toast.makeText(activity,"카카오 계정으로 로그인 성공",Toast.LENGTH_LONG).show()
+
+            }
+        }
     }
 }

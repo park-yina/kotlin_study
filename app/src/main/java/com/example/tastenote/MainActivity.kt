@@ -47,6 +47,7 @@ class MainActivity() : ComponentActivity() {
     private lateinit var oAuthLoginCallback:OAuthLoginCallback
     private lateinit var requestLauncher: ActivityResultLauncher<Intent>
     val Google=SocialLogin.Google()
+    val Kakao=SocialLogin.Kakao()
     inner class Permission() {
         private fun onShowPermissionDialog() {
             AlertDialog.Builder(binding.root.context)
@@ -115,6 +116,9 @@ class MainActivity() : ComponentActivity() {
             val signInIntent=GoogleSignIn.getClient(this,gso).signInIntent
             requestLauncher.launch(signInIntent)
 
+        }
+        binding.kakaoBtn.setOnClickListener {
+            Kakao.onKakoLogin(this)
         }
     }
 }
