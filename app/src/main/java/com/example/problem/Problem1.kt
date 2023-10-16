@@ -5,12 +5,6 @@ import junit.framework.TestCase.assertEquals
 import org.junit.Test
 import java.lang.Math.abs
 import java.lang.Math.max
-
-/**
- * Instrumented test, which will execute on an Android device.
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
 class Problem1Test {
 
     @Test
