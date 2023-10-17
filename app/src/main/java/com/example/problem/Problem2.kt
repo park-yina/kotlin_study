@@ -4,8 +4,6 @@ import org.junit.Test
 import junit.framework.TestCase.assertEquals
 import java.util.Stack
 
-
-<<<<<<< HEAD
 class Problem2{
  inner class Problem2Test{
      @Test
@@ -26,7 +24,6 @@ class Problem2{
             if(resultString.isNullOrEmpty())
                 resultString.plus("")
             return resultString.toString()
-=======
 class Problem2 {
     @Test
     fun case1() {
@@ -56,7 +53,6 @@ class Problem2 {
                 }
             }
             return result.joinToString("")
->>>>>>> 302ab1d (2번 문제 새로 알게된 사항 정리)
         }
     }
 }
