@@ -16,6 +16,7 @@ class Problem3 {
             val result=14
             assertEquals(result,SolvePromble3().countClap(number))
         }
+    //369 가독성 수정하기
     inner class SolvePromble3{
         fun countClap(number:Int):Int{
             var result:Int=0
