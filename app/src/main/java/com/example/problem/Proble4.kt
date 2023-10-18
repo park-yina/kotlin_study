@@ -31,6 +31,7 @@ class Problem4 {
 
     inner class Problem4Solve {
         //알파벳 여부를 판별하고 몇번째인지 구해서 변환해야하니까 아스키코드 활용하는 게 좋을듯
+        var convertResult: String = ""
         var result: String = ""
         fun convert(word: String): String {
             for (index in 0 until word.length) {
